@@ -106,10 +106,37 @@ def setup_settlements():
 
     return player_settlements
 
+#Start menu
+while True:
+    print("\nWelcome to Catan Resource Tracker!")
+    print("1. New Game")
+    print("2. Load Game")
+    print("3. Exit")
 
-#Run settlement registration
-player_settlements = setup_settlements()
+    choice = input("\nChoose an option: ")
 
+    if choice == "1":
+        print("\nStarting a new game...")
+        player_settlements = setup_settlements()
+        break
+
+    elif choice == "2":
+        try:
+            with open("data/game_setup.json", "r") as file:
+                player_settlements = json.load(file)
+
+            print("\nGame setup loaded successfully!")
+            break
+
+        except FileNotFoundError:
+            print("\nNo saved game setup found. Please start a new game.")
+
+    elif choice == "3":
+        print("\nGoodbye!")
+        raise SystemExit
+
+    else:
+        print("\nInvalid choice. Please choose 1, 2 or 3.")
 
 #Starting resource distribution
 for player in players_names:
@@ -169,10 +196,11 @@ while game_running:
 
     #Resource distribution
     for player in player_settlements:
-        for settlement in player_settlements[player]:
-            if settlement["number"] == dice_rolls:
-                resource = settlement["resource"]
-                players_resources[player][resource] += 1
+        for settlement in player_settlements[player].values():
+                for hex in settlement:
+                    if hex["number"] == dice_rolls:
+                        resource = hex["resource"]
+                        players_resources[player][resource] += 1
 
     #Resource overview
     resource_overview()

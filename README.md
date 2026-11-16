@@ -1,1 +1,1 @@
-#Catan Resource Tracker projekt
+Catan Resource Tracker project

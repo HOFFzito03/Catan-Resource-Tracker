@@ -1,0 +1,90 @@
+{
+    "Jonas": {
+        "settlement_1": [
+            {
+                "resource": "wheat",
+                "number": 3
+            },
+            {
+                "resource": "brick",
+                "number": 5
+            }
+        ],
+        "settlement_2": [
+            {
+                "resource": "brick",
+                "number": 10
+            },
+            {
+                "resource": "sheep",
+                "number": 8
+            }
+        ]
+    },
+    "Aksel": {
+        "settlement_1": [
+            {
+                "resource": "ore",
+                "number": 8
+            },
+            {
+                "resource": "wood",
+                "number": 12
+            }
+        ],
+        "settlement_2": [
+            {
+                "resource": "brick",
+                "number": 3
+            },
+            {
+                "resource": "brick",
+                "number": 10
+            }
+        ]
+    },
+    "Mikkel": {
+        "settlement_1": [
+            {
+                "resource": "brick",
+                "number": 2
+            },
+            {
+                "resource": "ore",
+                "number": 6
+            }
+        ],
+        "settlement_2": [
+            {
+                "resource": "sheep",
+                "number": 8
+            },
+            {
+                "resource": "ore",
+                "number": 4
+            }
+        ]
+    },
+    "Andreas": {
+        "settlement_1": [
+            {
+                "resource": "wheat",
+                "number": 8
+            },
+            {
+                "resource": "wood",
+                "number": 5
+            }
+        ],
+        "settlement_2": [
+            {
+                "resource": "ore",
+                "number": 2
+            },
+            {
+                "resource": "sheep",
+                "number": 6
+            }
+        ]
+    }
+}

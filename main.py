@@ -1,3 +1,5 @@
+import json
+
 print("Welcome to Catan Resource Tracker!")
 
 #Player registration
@@ -39,69 +41,82 @@ building_costs = {
 }
 
 #Settlement registration
-player_settlements = {}
+def setup_settlements():
+    player_settlements = {}
 
-for player in players_names:
-    player_settlements[player] = {
-        "settlement_1": [],
-        "settlement_2": []
-    }
+    for player in players_names:
+        player_settlements[player] = {
+            "settlement_1": [],
+            "settlement_2": []
+        }
 
-#First settlement round
-for player in players_names:
-    print(f"\nRegister Settlement 1 for {player}")
+    #First settlement round
+    for player in players_names:
+        print(f"\nRegister Settlement 1 for {player}")
 
-    while True:
-        resource = input("Enter resource (or 'done'): ").lower()
+        while True:
+            resource = input("Enter resource (or 'done'): ").lower()
 
-        if resource == "done":
-            break
+            if resource == "done":
+                break
 
-        if resource not in ["wood", "brick", "sheep", "wheat", "ore"]:
-            print("Invalid resource. Try again.")
-            continue
+            if resource not in ["wood", "brick", "sheep", "wheat", "ore"]:
+                print("Invalid resource. Try again.")
+                continue
 
-        number = int(input("Enter hex number: "))
+            number = int(input("Enter hex number: "))
 
-        if number < 2 or number > 12:
-            print("Invalid number. Enter a number between 2 and 12.")
-            continue
+            if number < 2 or number > 12:
+                print("Invalid number. Enter a number between 2 and 12.")
+                continue
 
-        player_settlements[player]["settlement_1"].append({
-            "resource": resource,
-            "number": number
-        })
+            player_settlements[player]["settlement_1"].append({
+                "resource": resource,
+                "number": number
+            })
 
-#Second settlement round - reverse order
-for player in reversed(players_names):
-    print(f"\nRegister Settlement 2 for {player}")
+    #Second settlement round - reverse order
+    for player in reversed(players_names):
+        print(f"\nRegister Settlement 2 for {player}")
 
-    while True:
-        resource = input("Enter resource (or 'done'): ").lower()
+        while True:
+            resource = input("Enter resource (or 'done'): ").lower()
 
-        if resource == "done":
-             break
+            if resource == "done":
+                break
 
-        if resource not in ["wood", "brick", "sheep", "wheat", "ore"]:
-            print("Invalid resource. Try again.")
-            continue
+            if resource not in ["wood", "brick", "sheep", "wheat", "ore"]:
+                print("Invalid resource. Try again.")
+                continue
 
-        number = int(input("Enter hex number: "))
+            number = int(input("Enter hex number: "))
 
-        if number < 2 or number > 12:
-            print("Invalid number. Enter a number between 2 and 12.")
-            continue
+            if number < 2 or number > 12:
+                print("Invalid number. Enter a number between 2 and 12.")
+                continue
 
-        player_settlements[player]["settlement_2"].append({
-            "resource": resource,
-            "number": number
-        })
+            player_settlements[player]["settlement_2"].append({
+                "resource": resource,
+                "number": number
+            })
+
+    #Save game setup to JSON file
+    with open("data/game_setup.json", "w") as file:
+        json.dump(player_settlements, file, indent=4)
+
+    return player_settlements
+
+
+#Run settlement registration
+player_settlements = setup_settlements()
+
 
 #Starting resource distribution
 for player in players_names:
     for hex in player_settlements[player]["settlement_2"]:
         resource = hex["resource"]
         players_resources[player][resource] += 1
+
 
 #Resource overview
 def resource_overview():
@@ -115,8 +130,6 @@ def resource_overview():
             total_resources += amount
 
         print(f"Total resources: {total_resources}")
-
-resource_overview()
 
 #Purchase function
 def purchase(player, item):

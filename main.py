@@ -1,5 +1,9 @@
 import json
 
+from game.setup import setup_settlements, load_game_setup
+from game.resources import distribute_starting_resources, resource_overview
+from game.buildings import purchase
+
 print("Welcome to Catan Resource Tracker!")
 
 #Player registration
@@ -40,72 +44,6 @@ building_costs = {
     }
 }
 
-#Settlement registration
-def setup_settlements():
-    player_settlements = {}
-
-    for player in players_names:
-        player_settlements[player] = {
-            "settlement_1": [],
-            "settlement_2": []
-        }
-
-    #First settlement round
-    for player in players_names:
-        print(f"\nRegister Settlement 1 for {player}")
-
-        while True:
-            resource = input("Enter resource (or 'done'): ").lower()
-
-            if resource == "done":
-                break
-
-            if resource not in ["wood", "brick", "sheep", "wheat", "ore"]:
-                print("Invalid resource. Try again.")
-                continue
-
-            number = int(input("Enter hex number: "))
-
-            if number < 2 or number > 12:
-                print("Invalid number. Enter a number between 2 and 12.")
-                continue
-
-            player_settlements[player]["settlement_1"].append({
-                "resource": resource,
-                "number": number
-            })
-
-    #Second settlement round - reverse order
-    for player in reversed(players_names):
-        print(f"\nRegister Settlement 2 for {player}")
-
-        while True:
-            resource = input("Enter resource (or 'done'): ").lower()
-
-            if resource == "done":
-                break
-
-            if resource not in ["wood", "brick", "sheep", "wheat", "ore"]:
-                print("Invalid resource. Try again.")
-                continue
-
-            number = int(input("Enter hex number: "))
-
-            if number < 2 or number > 12:
-                print("Invalid number. Enter a number between 2 and 12.")
-                continue
-
-            player_settlements[player]["settlement_2"].append({
-                "resource": resource,
-                "number": number
-            })
-
-    #Save game setup to JSON file
-    with open("data/game_setup.json", "w") as file:
-        json.dump(player_settlements, file, indent=4)
-
-    return player_settlements
-
 #Start menu
 while True:
     print("\nWelcome to Catan Resource Tracker!")
@@ -117,13 +55,12 @@ while True:
 
     if choice == "1":
         print("\nStarting a new game...")
-        player_settlements = setup_settlements()
+        player_settlements = setup_settlements(players_names)
         break
 
     elif choice == "2":
         try:
-            with open("data/game_setup.json", "r") as file:
-                player_settlements = json.load(file)
+            player_settlements = load_game_setup()
 
             print("\nGame setup loaded successfully!")
             break
@@ -137,47 +74,6 @@ while True:
 
     else:
         print("\nInvalid choice. Please choose 1, 2 or 3.")
-
-#Starting resource distribution
-for player in players_names:
-    for hex in player_settlements[player]["settlement_2"]:
-        resource = hex["resource"]
-        players_resources[player][resource] += 1
-
-
-#Resource overview
-def resource_overview():
-    print("\nResource Overview:")
-    for player in players_resources:
-        total_resources = 0
-        print(f"\n{player}")
-
-        for resource, amount in players_resources[player].items():
-            print(resource, amount)
-            total_resources += amount
-
-        print(f"Total resources: {total_resources}")
-
-#Purchase function
-def purchase(player, item):
-
-    costs = building_costs[item]
-
-     #Check if player can afford the purchase
-    for resource, amount in costs.items():
-
-        if players_resources[player][resource] < amount:
-
-            print(f"Not enough {resource}!")
-
-            return False
-
-    #Deduct resources
-    for resource, amount in costs.items():
-        players_resources[player][resource] -= amount
-
-    print(f"{player} purchased {item}!")
-    return True
 
 #Game loop
 game_running = True
@@ -203,5 +99,5 @@ while game_running:
                         players_resources[player][resource] += 1
 
     #Resource overview
-    resource_overview()
+    resource_overview(players_resources)
     round_counter += 1
